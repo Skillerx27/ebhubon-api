@@ -55,11 +55,11 @@ export class CategoryController {
         }),
       )
     @Post('createCategory')
-    async createcategory(@Request() req,@Body() user: Category) {
-        console.log("category created===============",user)
+    async createcategory(@Request() req,@Body() body: Category) {
+        console.log("category created===============",body)
         let newCategory : any = {}
         try{
-            newCategory = this.categoryService.createcategory(user,req.user.mail);
+            newCategory = this.categoryService.createcategory(body,req.user.mail);
         }catch(err){
             //console.log("ERROR================",err)
             return err; 
@@ -102,7 +102,7 @@ export class CategoryController {
 
 
     @Post('attributeCreate')
-    async attributeCreate(@Request() req,@Body() user: CategoryAttribute) {
+    async attributeCreate(@Request() req,@Body() user) {
         console.log("category created===============",user)
         let newCategory : any = {}
         try{

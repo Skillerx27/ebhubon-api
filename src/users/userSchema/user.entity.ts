@@ -8,8 +8,8 @@ import * as bcrypt from 'bcrypt';
 @Unique("UQ_EMAIL",["mail"])
 @Unique("UQ_cellNo",["cellNo"])
 export class User {
-  @ObjectIdColumn()
-    _id: ObjectID;
+  @PrimaryGeneratedColumn()
+    _id: number;
 
 
   

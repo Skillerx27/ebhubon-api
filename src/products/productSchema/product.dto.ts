@@ -1,10 +1,10 @@
 import { ObjectID } from "typeorm";
 
 export class ProductDto {
-    _id: ObjectID;
+    _id: number;
     title: string;
     category: string;
-    categories: [];
+    // categories: string;
     sellerId: string;
     categoryId: string;
     price: string;

@@ -15,8 +15,8 @@ export class Category {
     // @PrimaryGeneratedColumn()
     // id: number
 
-    @ObjectIdColumn()
-    _id: ObjectID;
+    @PrimaryGeneratedColumn()
+    _id: number;
 
     @Column({name: "title"})
     @IsNotEmpty()
@@ -66,7 +66,8 @@ export class Category {
     updatedBy: string;
 
     @Allow()
-    @ObjectIdColumn({ name: 'parentId' })
+    // @ObjectIdColumn({ name: 'parentId' })
+    @Column()
     parentId: string;
 
     @Allow()
@@ -81,13 +82,13 @@ export class Category {
     @Column()
     description: string;
 
-    @Allow()
-    @Column()
-    children: Category[];
+    // @Allow()
+    // @Column()
+    // children: Category[];
 
-    @Allow()
-    @Column()
-    parentCategories: [];
+    // @Allow()
+    // @Column()
+    // parentCategories: [];
 
     @Allow()
     @ManyToOne(type => Category, category => category.childCategories)

@@ -5,7 +5,7 @@ export interface SellerInfoInter {
     cellNo: string;
     mail: string;
     username: string;
-    _id: ObjectID;
+    _id: number;
     shopName: string;
     password:string;
     CreatedBy: string;

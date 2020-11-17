@@ -37,9 +37,11 @@ import { CategoryAttribute } from './category/categorySchema/categoryWiseAttr.en
     TypeOrmModule.forRootAsync({
         name:'ebhubon',
         useFactory: () => ({
-        type: 'mongodb',
+        type: 'mysql',
         host: 'localhost',
-        port: 27017,
+        port: 3306,
+        username: 'root',
+        password: '',
         database: 'ebhubon',
         entities: [Category,User,Seller,Product,SellerUser,CategoryAttribute],
         synchronize: true,

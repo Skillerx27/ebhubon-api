@@ -42,7 +42,7 @@ export class ProductsService {
         await this.productRepository.delete(id);
       }
 
-      async create(data: ProductDto, decoded: any):Promise<any> {
+      async create(data: any, decoded: any):Promise<any> {
 
         console.log(data.categories)
         if (data.categories){

@@ -6,8 +6,8 @@ import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, ObjectIdColumn, 
 @Entity()
 export class Product {
 
-    @ObjectIdColumn()
-    _id: ObjectID;
+    @PrimaryGeneratedColumn()
+    _id: number;
 
     @Allow()
     @IsNotEmpty()
@@ -18,20 +18,22 @@ export class Product {
     @Column()
     category: string;
     
-    @Allow()
-    @Column()
-    categories: [];
+    // @Allow()
+    // @Column()
+    // categories: [];
     
     //@IsNotEmpty()
     @Allow()
-    @ObjectIdColumn({ name: 'sellerId' })
+    // @ObjectIdColumn({ name: 'sellerId' })
+    @Column()
     sellerId: string;
 
     // @ObjectIdColumn()
     // categories_id: ObjectID;
 
     @Allow()
-    @ObjectIdColumn({ name: 'categoryId' })
+    // @ObjectIdColumn({ name: 'categoryId' })
+    @Column()
     categoryId: string;
 
     @IsNotEmpty()

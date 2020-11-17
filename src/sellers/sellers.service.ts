@@ -29,7 +29,7 @@ export class SellersService {
   }
 
 
-  async permission(_id: ObjectID, data: Seller) {
+  async permission(_id:number, data: Seller) {
     await this.sellerRepository.update({ _id }, data);
     return await this.sellerRepository.findOne(_id)
   }

@@ -11,11 +11,12 @@ import { Category } from './category.entity';
 @Entity()
 //@Unique("UQ_Category",["title"])
 export class CategoryAttribute {
-    @ObjectIdColumn()
-    _id: ObjectID;
+    @PrimaryGeneratedColumn()
+    _id: number;
 
     @Allow()
-    @ObjectIdColumn({ name: 'CCcategoryId' })
+    // @ObjectIdColumn({ name: 'CCcategoryId' })
+    @Column()
     categoryId: string;
 
     @Allow()
@@ -26,9 +27,9 @@ export class CategoryAttribute {
     @Column()
     attrType: string;
 
-    @Allow()
-    @Column()
-    attrOption: [];
+    // @Allow()
+    // @Column()
+    // attrOption: [];
 
     @Allow()
     @Column()
@@ -54,9 +55,9 @@ export class CategoryAttribute {
     @Column()
     Category: string;
 
-    @Allow()
-    @Column()
-    categoriesId:[]
+    // @Allow()
+    // @Column()
+    // categoriesId:[]
     
     // @ManyToOne(type => Category, category => category.categoryWiseAttrs)
     // categorys: Category;

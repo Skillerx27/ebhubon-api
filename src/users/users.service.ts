@@ -50,19 +50,27 @@ export class UsersService {
 
    
     async findUser(username: string): Promise<User> {
-        const userRepaository = getMongoRepository(User,'ebhubon')
+        // const userRepaository = getMongoRepository(User,'ebhubon')
+        // const name = await this.userRepository.findOne({
+        //     where: {
+        //         $or: [
+        //             { username: username},
+        //             { mail: username},
+        //             { cellNo: username}
+        //           ]
+        //       }
+        //     });
         const name = await this.userRepository.findOne({
-            where: {
-                $or: [
+            where: [
                     { username: username},
                     { mail: username},
                     { cellNo: username}
-                  ]
-              }
+                ]
             });
         console.log(name)
         return name;
     }
+    
 
     async create(data: User):Promise<User> {
         let userData : User;

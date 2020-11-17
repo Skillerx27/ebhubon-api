@@ -7,8 +7,8 @@ import * as bcrypt from 'bcrypt';
 @Entity()
 @Unique("UQ_EMAIL",["mail","cellNo"])
 export class User {
-  @ObjectIdColumn()
-    _id: ObjectID;
+  @PrimaryGeneratedColumn()
+    _id: number;
 
 
   @IsNotEmpty()

@@ -1,16 +1,17 @@
 
 import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, ObjectIdColumn, ObjectID, OneToMany, ManyToOne } from 'typeorm';
 
-@Entity({'name':"sellerUsers"})
+@Entity()
 export class SellerUser{
 
-    @ObjectIdColumn()
-    _id: ObjectID;
+    @PrimaryGeneratedColumn()
+    _id: number;
 
     @Column()
     userId: string;
 
-    @ObjectIdColumn({name: "sellerId"})
+    // @ObjectIdColumn({name: "sellerId"})
+    @Column()
     sellerId: string;
     
     @Column()

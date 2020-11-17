@@ -7,8 +7,8 @@ import { User } from 'src/users/userSchema/user.entity';
 @Entity()
 @Unique("UQ_Seller",["shopName"])
 export class Seller  {
-  @ObjectIdColumn()
-  _id: ObjectID;
+  @PrimaryGeneratedColumn()
+  _id: number;
 
 
   @Column({name: "shopName"})

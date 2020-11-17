@@ -2,7 +2,7 @@ import { ObjectID } from "typeorm";
 import { Category } from "./category.entity";
 
 export interface categoryinterface {
-     _id: ObjectID;
+     _id: number;
      title: string;
      slug: string;
      order: string;

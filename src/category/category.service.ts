@@ -74,7 +74,7 @@ export class CategoryService {
             where:{parentId:String(parent[i]._id)},
           })    
           //if child exist creating a new array for child
-          if(Object.keys(child).length) parent[i].children=child;
+          /////if(Object.keys(child).length) parent[i].children=child;
           if(child!=null)
           {
              for(let j=0; j<child.length; j++)
@@ -82,7 +82,7 @@ export class CategoryService {
               let subchild=await this.categoryRepository.find({
                 where:{parentId:String(child[j]._id)},
               })
-              if(Object.keys(subchild).length) child[j].children=subchild;
+              /////if(Object.keys(subchild).length) child[j].children=subchild;
               if(subchild!=null)
               {
                  for(let k=0; k<subchild.length; k++)
@@ -90,7 +90,7 @@ export class CategoryService {
                   let subsubchild = await this.categoryRepository.find({
                     where:{parentId:String(subchild[k]._id)},
                   })
-                  if(Object.keys(subsubchild).length) subchild[k].children=subsubchild;
+                  /////if(Object.keys(subsubchild).length) subchild[k].children=subsubchild;
                  }
               }
              }
@@ -170,15 +170,15 @@ export class CategoryService {
         let createdCategory : Category
         try{
           console.log("ADDED CATEGORY DATA=================",data)
-          console.log("parent Category =================",data.parentCategories)
-          if (data.parentCategories){
-            data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
-            let catId = await this.categoryRepository.findOne(data.parentId)
-            data.parentCategoryTitle =  catId.title
-          }
-          else{
-          data.parentId = null
-          }
+          // console.log("parent Category =================",data.parentCategories)
+          // if (data.parentCategories){
+          //   data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
+          //   let catId = await this.categoryRepository.findOne(data.parentId)
+          //   data.parentCategoryTitle =  catId.title
+          // }
+          // else{
+          // data.parentId = null
+          // }
           data.createdAt = new Date()
           data.createdBy = mail
           createdCategory =  await this.categoryRepository.save(data)
@@ -199,7 +199,7 @@ export class CategoryService {
           let child=await this.categoryRepository.find({
             where:{parentId:String(parent[i]._id)},
           })    
-          if(Object.keys(child).length) parent[i].children=child;
+          // //if(Object.keys(child).length) parent[i].children=child;
           if(child!=null)
           {
              for(let j=0; j<child.length; j++)
@@ -207,7 +207,7 @@ export class CategoryService {
               let subchild=await this.categoryRepository.find({
                 where:{parentId:String(child[j]._id)},
               })
-              if(Object.keys(subchild).length) child[j].children=subchild;
+              // //if(Object.keys(subchild).length) child[j].children=subchild;
              }
           }
         }
@@ -257,16 +257,16 @@ export class CategoryService {
 
       async update(data: Category) {
         let categoryID = data._id
-        if (data.parentCategories){
-          data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
-          let categoryTitle = (await this.categoryRepository.findOne(data.parentId)).title
-          data.parentCategoryTitle =  categoryTitle
-        }
-        else{
-          data.parentCategories = null 
-          data.parentCategoryTitle = null
-          data.parentId = null
-        }
+        // if (data.parentCategories){
+        //   data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
+        //   let categoryTitle = (await this.categoryRepository.findOne(data.parentId)).title
+        //   data.parentCategoryTitle =  categoryTitle
+        // }
+        // else{
+        //   data.parentCategories = null 
+        //   data.parentCategoryTitle = null
+        //   data.parentId = null
+        // }
         delete data._id 
         let UpdatedData = await this.categoryRepository.update(categoryID,data); 
         return UpdatedData;
@@ -290,7 +290,7 @@ export class CategoryService {
       // }
 
 
-      async attributeCreate(data: categoryAttrDto ) {
+      async attributeCreate(data  ) {
         if (!data.categoryId){
             data.categoryId = data.categoriesId[data.categoriesId.length-1]
             delete data.categoriesId

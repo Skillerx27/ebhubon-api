@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, ObjectIdColumn, 
 
 
 export class categoryAttrDto {
-    _id: ObjectID;
+    _id: number;
     categoryId: string;
     attrTitle: string;
     attrType: string;
@@ -13,6 +13,6 @@ export class categoryAttrDto {
     updatedAt: Date;
     updatedBy: string;
     Category:string;
-    categoriesId:[];
+    // categoriesId:[];
     
 }
