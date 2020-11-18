@@ -11,6 +11,7 @@ import { categoryDto } from './categorySchema/category.dto';
 import {  } from './common/validation.pipe';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { CategoryAttribute } from './categorySchema/categoryWiseAttr.entity';
+import { TermValue } from 'src/common/Entity/termValue.entity';
 @Controller('category')
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
@@ -18,12 +19,12 @@ export class CategoryController {
 
     //find all the roots 
    
-    @Get('all')
-    find(): Promise<categoryinterface> {
-        return this.categoryService.findAll();
-    }
+    // @Get('all')
+    // find(): Promise<categoryinterface> {
+    //     return this.categoryService.findAll();
+    // }
 
-    //find entire category tree
+    // //find entire category tree
     
     @Get('allChild')
     getallChild(): Promise<categoryinterface> {
@@ -32,19 +33,19 @@ export class CategoryController {
 
 
 
-    //find the subdomain category
-    // @UseGuards(JwtAuthGuard)
-    // @Get('specific')
-    // createCategory(@Param() params,@Body() user: Category) {
-    //     return this.categoryService.createCategory(params.id,user);
-    // }
+    // //find the subdomain category
+    // // @UseGuards(JwtAuthGuard)
+    // // @Get('specific')
+    // // createCategory(@Param() params,@Body() user: Category) {
+    // //     return this.categoryService.createCategory(params.id,user);
+    // // }
 
     
-    @UseGuards(JwtAuthGuard)
-    @Get('get/:id')
-    getChild(@Param() params ): Promise<prodetailsInterface>  {
-        return this.categoryService.getChild(params.id);
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Get('get/:id')
+    // getChild(@Param() params ): Promise<prodetailsInterface>  {
+    //     return this.categoryService.getChild(params.id);
+    // }
 
 
 
@@ -55,11 +56,10 @@ export class CategoryController {
         }),
       )
     @Post('createCategory')
-    async createcategory(@Request() req,@Body() body: Category) {
-        console.log("category created===============",body)
+    async createcategory(@Request() req) {
         let newCategory : any = {}
         try{
-            newCategory = this.categoryService.createcategory(body,req.user.mail);
+            newCategory = this.categoryService.createcategory(req.body,req.user.mail);
         }catch(err){
             //console.log("ERROR================",err)
             return err; 
@@ -74,68 +74,68 @@ export class CategoryController {
         return this.categoryService.showSubCategory();
     }
     
-    @UseGuards(JwtAuthGuard)
-    @Post('delete')
-    delete(@Body() body) {
-        return this.categoryService.delete(body.id);
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Post('delete')
+    // delete(@Body() body) {
+    //     return this.categoryService.delete(body.id);
+    // }
     
 
-    @UseGuards(JwtAuthGuard)
-    @Post('update')
-    update(@Body() params) {
-        console.log("Updated CAlled===============",params)
-        // console.log("asasdasdasdasd",params[0])
-        // console.log(x.length)
-        return this.categoryService.update(params);
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Post('update')
+    // update(@Body() params) {
+    //     console.log("Updated CAlled===============",params)
+    //     // console.log("asasdasdasdasd",params[0])
+    //     // console.log(x.length)
+    //     return this.categoryService.update(params);
+    // }
 
 
-    @UseGuards(JwtAuthGuard)
-    @Post('updateList')
-    updateList(@Body() params) {
-        console.log("Seller CAlled===============",params)
-        // console.log("asasdasdasdasd",params[0])
-        // console.log(x.length)
-        return this.categoryService.updateList(params);
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Post('updateList')
+    // updateList(@Body() params) {
+    //     console.log("Seller CAlled===============",params)
+    //     // console.log("asasdasdasdasd",params[0])
+    //     // console.log(x.length)
+    //     return this.categoryService.updateList(params);
+    // }
 
 
-    @Post('attributeCreate')
-    async attributeCreate(@Request() req,@Body() user) {
-        console.log("category created===============",user)
-        let newCategory : any = {}
-        try{
-            newCategory = this.categoryService.attributeCreate(user);
-        }catch(err){
-            //console.log("ERROR================",err)
-            return err; 
-        }
-        return await newCategory
-        //return this.categoryService.createcategory(user,req.user.mail);
-    }
+    // @Post('attributeCreate')
+    // async attributeCreate(@Request() req,@Body() user) {
+    //     console.log("category created===============",user)
+    //     let newCategory : any = {}
+    //     try{
+    //         newCategory = this.categoryService.attributeCreate(user);
+    //     }catch(err){
+    //         //console.log("ERROR================",err)
+    //         return err; 
+    //     }
+    //     return await newCategory
+    //     //return this.categoryService.createcategory(user,req.user.mail);
+    // }
 
 
-    @Post('deleteAttribute/:id')
-    attributeDelete(@Body() body) {
-        console.log("DELETE CALLED",body)
-        return this.categoryService.attributeDelete(body);
-    }
+    // @Post('deleteAttribute/:id')
+    // attributeDelete(@Body() body) {
+    //     console.log("DELETE CALLED",body)
+    //     return this.categoryService.attributeDelete(body);
+    // }
     
-    @Post('attribute/update')
-    attributeUpdate(@Body() params) {
-        return this.categoryService.attributeUpdate(params);
-    }
+    // @Post('attribute/update')
+    // attributeUpdate(@Body() params) {
+    //     return this.categoryService.attributeUpdate(params);
+    // }
 
-    @Get('attribute/all')
-    attributeGet(): Promise<CategoryAttribute> {
-        return this.categoryService.attributeGet();
-    }
+    // @Get('attribute/all')
+    // attributeGet(): Promise<CategoryAttribute> {
+    //     return this.categoryService.attributeGet();
+    // }
 
-    @Get('attributeList/:id')
-    findspecific(@Param('id') id) {
-        console.log("AttributeList called ",id)
-        return this.categoryService.findspecific(id);
-    }
+    // @Get('attributeList/:id')
+    // findspecific(@Param('id') id) {
+    //     console.log("AttributeList called ",id)
+    //     return this.categoryService.findspecific(id);
+    // }
 
 }

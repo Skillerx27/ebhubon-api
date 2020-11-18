@@ -6,12 +6,13 @@ import { Repository } from 'typeorm';
 import { Product } from './productSchema/products.entity';
 import {ObjectId,ObjectID as ObjID} from 'mongodb'
 import { ProductDto } from './productSchema/product.dto';
+import { TermValue } from 'src/common/Entity/termValue.entity';
 @Injectable()
 export class ProductsService {
 
     constructor( 
     @InjectRepository(Product,'ebhubon') private readonly productRepository: Repository<Product>,
-    @InjectRepository(Category,'ebhubon') private readonly categoryRepository: Repository<Category>) {}
+    @InjectRepository(TermValue,'ebhubon') private readonly categoryRepository: Repository<TermValue>) {}
 
     
     async findAll(): Promise<Product[]> {

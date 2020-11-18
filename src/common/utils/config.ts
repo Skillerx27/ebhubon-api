@@ -1,4 +1,4 @@
-const devUrl ='http://192.168.0.107:3000';
+const devUrl ='http://192.168.0.112:3000';
 const liveUrl = 'http://api.ebhubon.com';
 
 let temp = devUrl;

@@ -17,23 +17,25 @@ import { ProductDto } from 'src/products/productSchema/product.dto';
 import { isEmpty } from 'class-validator';
 import { categoryAttrDto } from './categorySchema/categoryAttr.dto';
 import { CategoryAttribute } from './categorySchema/categoryWiseAttr.entity';
+import { TermValue } from 'src/common/Entity/termValue.entity';
+import { Term } from 'src/common/Entity/term.entity';
 
 @Injectable()
 export class CategoryService {
     constructor( 
-    @InjectRepository(Category,'ebhubon') private readonly categoryRepository: Repository<Category>,
-    @InjectRepository(CategoryAttribute,'ebhubon') private readonly categoryAttributeRepository: Repository<CategoryAttribute>
+    @InjectRepository(TermValue,'ebhubon') private readonly termValueRepository: Repository<TermValue>,
+    @InjectRepository(Term,'ebhubon') private readonly termRepository: Repository<Term>
     ) {}
 
       async delete(id: string) {
-        await this.categoryRepository.delete(id);
+        await this.termValueRepository.delete(id);
       }
 
 
 
     //find all the roots
     async findAll(): Promise<any> {
-        let data=await this.categoryRepository.find()
+        let data=await this.termValueRepository.find()
         return data;
       }
 
@@ -42,13 +44,13 @@ export class CategoryService {
       //find the entire sub-tree 
       async getChild(username: string): Promise<any>  {
         console.log(username);
-        let data= await this.categoryRepository.findOne({
+        let data= await this.termValueRepository.findOne({
           where:{title:username},
         })
         console.log("Data==============", data);
-        let pID = data._id;
+        let pID = data.id;
         console.log(pID);
-        const sub_category=await this.categoryRepository.find({
+        const sub_category=await this.termValueRepository.find({
           where:{parentId:pID},
         })
         console.log("SUB CATEGORYS=============",sub_category);
@@ -60,57 +62,25 @@ export class CategoryService {
 
       //find entire category tree
       async getallChild(): Promise<any> {
-        console.log("ALL CHILD CALLED")
-        console.log("find all");
-        let parent = await this.categoryRepository.find({
-          where:{parentId:null},
-        })
-       
-        //console.log("PARENT============",parent)
-        for(let i=0; i<parent.length; i++)
-        {
-          parent[i].parentId = null;
-          let child=await this.categoryRepository.find({
-            where:{parentId:String(parent[i]._id)},
-          })    
-          //if child exist creating a new array for child
-          /////if(Object.keys(child).length) parent[i].children=child;
-          if(child!=null)
-          {
-             for(let j=0; j<child.length; j++)
-             { 
-              let subchild=await this.categoryRepository.find({
-                where:{parentId:String(child[j]._id)},
-              })
-              /////if(Object.keys(subchild).length) child[j].children=subchild;
-              if(subchild!=null)
-              {
-                 for(let k=0; k<subchild.length; k++)
-                 { 
-                  let subsubchild = await this.categoryRepository.find({
-                    where:{parentId:String(subchild[k]._id)},
-                  })
-                  /////if(Object.keys(subsubchild).length) subchild[k].children=subsubchild;
-                 }
+        let categoryArray = await this.termValueRepository.find({where:{parentTermValue:null},relations: [
+        'childTermValues',
+        'childTermValues.childTermValues',
+        'childTermValues.childTermValues.childTermValues'
+        ]})
+
+        const iterate = (obj) => {
+          Object.keys(obj).forEach(key => {
+          if(obj[key].length === 0) delete obj[key]
+          if (typeof obj[key] === 'object') {
+                  iterate(obj[key])
               }
-             }
-          }
-         
+          })
+          return obj;
         }
+        return iterate(categoryArray)
 
-
-        return parent;
-
-
-        // return subtree;
-
-        // const user = await getMongoRepository(category,'ebhubon')
-        // .createQueryBuilder("user")
-        // .where("user.id = :id", { id: null })
-        // .getOne();
-        // return user;
-        //return this.categoryRepository.findOne({parentId: null});
       }
+     
       
       // async createCategory(username: string, c_details: Category): Promise<Category> {
       //   console.log(username);
@@ -161,27 +131,24 @@ export class CategoryService {
       //   }
       //   const new_category = await  this.categoryRepository.save(data);
       //   return data;
-
-
       // }
 
       //creating fresh category
-      async createcategory(data: categoryDto,mail :string ) {
-        let createdCategory : Category
+      async createcategory(data: any, mail :string ) {
+        let createdCategory : TermValue
         try{
           console.log("ADDED CATEGORY DATA=================",data)
-          // console.log("parent Category =================",data.parentCategories)
-          // if (data.parentCategories){
-          //   data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
-          //   let catId = await this.categoryRepository.findOne(data.parentId)
-          //   data.parentCategoryTitle =  catId.title
-          // }
-          // else{
-          // data.parentId = null
-          // }
+          data.images = { icon : data.icon,image:data.image,banner:data.banner}
+
+          if(data.parentCategories) {
+            let parentId = data.parentCategories[data.parentCategories.length-1]
+            let tv = await this.termValueRepository.findOne(parentId)
+            data.parentTermValue =  tv;
+          }
+          console.log(data.images);
           data.createdAt = new Date()
           data.createdBy = mail
-          createdCategory =  await this.categoryRepository.save(data)
+          createdCategory =  await this.termValueRepository.save(data)
         }catch(err) {
           return err.writeErrors[0].errmsg        
         }
@@ -189,145 +156,158 @@ export class CategoryService {
       }
 
       
+      
       async showSubCategory(): Promise<any> {
-        let parent=await this.categoryRepository.find({
-          where:{parentId:null},
-        })
-        for(let i=0; i<parent.length; i++)
-        {
-          parent[i].parentId = null;
-          let child=await this.categoryRepository.find({
-            where:{parentId:String(parent[i]._id)},
-          })    
-          // //if(Object.keys(child).length) parent[i].children=child;
-          if(child!=null)
-          {
-             for(let j=0; j<child.length; j++)
-             { 
-              let subchild=await this.categoryRepository.find({
-                where:{parentId:String(child[j]._id)},
-              })
-              // //if(Object.keys(subchild).length) child[j].children=subchild;
-             }
-          }
-        }
-        return parent;
+        return await this.termValueRepository.find({where:{parentTermValue:null},relations: ['childTermValues', 'childTermValues.childTermValues']})
+        
+        // const result = await this.termValueRepository.find();
+
+        // let termValues = []
+        // for (let i = 0; i < result.length; i++) {
+        //     const childTermValues:TermValue = await  this.termValueRepository.findOne({where:{id:result[i].id}, relations: ['childTermValues']});
+        //     termValues.push(childTermValues) 
+
+        // }
+        // return termValues
+
+
+        // let parent=await this.termValueRepository.find({
+        //   where:{parentTermValueId:null},
+        // })
+        // for(let i=0; i<parent.length; i++)
+        // {
+        //   let child=await this.termValueRepository.find({
+        //     where:{parentTermValueId:parent[i].id},
+        //   })    
+        //   // //if(Object.keys(child).length) parent[i].children=child;
+        //   if(child!=null)
+        //   {
+        //      for(let j=0; j<child.length; j++)
+        //      { 
+        //       let subchild=await this.termValueRepository.find({
+        //         where:{parentId:child[j].id},
+        //       })
+        //       // //if(Object.keys(subchild).length) child[j].children=subchild;
+        //      }
+        //   }
+        // }
+        // return parent;
         
       }
 
       //update
-      async updateList(data: any) {
-        console.log("status", data["status"]);
-        for (let key in data) {
-            if (data.hasOwnProperty(key) && key!="status") {
-                // data[key].status = data["status"];
-                // data[key].updatedAt= new Date()
-                // data[key].updatedBy = data.mail
-                // // let sellerId = new sellers();
-                // // sellerId._id =data[key]._id;
-                // // sellerId._id = data[key]._id 
-                // let _id  = data[key]._id;
-                // // tmp = new ObjID(tmp)
-                // console.log("_id",_id);
-                // delete data[key]._id;
-                // // let x = await this.sellerinfoRepository.update({_id}, data[key]); 
-                // let x = await this.categoryRepository.findOne(_id); 
-                // //delete x.shopName;
-                // //delete x.role;
-                // delete x.status;
-                // //delete x.cellNo;
-                // //delete x.mail;
-                // console.log("x======",x);
-                // let xup = await this.categoryRepository.update(x,data[key]); 
-                // console.log("Vlaue=================",xup)
-                data[key].status = data["status"];
-                data[key].updatedAt = new Date()
-                data[key].updateBy = data.mail
-                let _id  = data[key]._id;
-                delete data[key]._id;
-                let xup = await this.categoryRepository.update(_id, data[key]);
-            }
-          }
-          return data;
-        // console.log("ID====================",_id);
-        // await this.sellerinfoRepository.update({_id}, data); 
-        // return await this.sellerinfoRepository.findOne(_id)
-        //return this.sellerinfoRepository.update({_id}, data);
-      }
+      // async updateList(data: any) {
+      //   console.log("status", data["status"]);
+      //   for (let key in data) {
+      //       if (data.hasOwnProperty(key) && key!="status") {
+      //           // data[key].status = data["status"];
+      //           // data[key].updatedAt= new Date()
+      //           // data[key].updatedBy = data.mail
+      //           // // let sellerId = new sellers();
+      //           // // sellerId._id =data[key]._id;
+      //           // // sellerId._id = data[key]._id 
+      //           // let _id  = data[key]._id;
+      //           // // tmp = new ObjID(tmp)
+      //           // console.log("_id",_id);
+      //           // delete data[key]._id;
+      //           // // let x = await this.sellerinfoRepository.update({_id}, data[key]); 
+      //           // let x = await this.categoryRepository.findOne(_id); 
+      //           // //delete x.shopName;
+      //           // //delete x.role;
+      //           // delete x.status;
+      //           // //delete x.cellNo;
+      //           // //delete x.mail;
+      //           // console.log("x======",x);
+      //           // let xup = await this.categoryRepository.update(x,data[key]); 
+      //           // console.log("Vlaue=================",xup)
+      //           data[key].status = data["status"];
+      //           data[key].updatedAt = new Date()
+      //           data[key].updateBy = data.mail
+      //           let _id  = data[key]._id;
+      //           delete data[key]._id;
+      //           let xup = await this.categoryRepository.update(_id, data[key]);
+      //       }
+      //     }
+      //     return data;
+      //   // console.log("ID====================",_id);
+      //   // await this.sellerinfoRepository.update({_id}, data); 
+      //   // return await this.sellerinfoRepository.findOne(_id)
+      //   //return this.sellerinfoRepository.update({_id}, data);
+      // }
 
-      async update(data: Category) {
-        let categoryID = data._id
-        // if (data.parentCategories){
-        //   data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
-        //   let categoryTitle = (await this.categoryRepository.findOne(data.parentId)).title
-        //   data.parentCategoryTitle =  categoryTitle
-        // }
-        // else{
-        //   data.parentCategories = null 
-        //   data.parentCategoryTitle = null
-        //   data.parentId = null
-        // }
-        delete data._id 
-        let UpdatedData = await this.categoryRepository.update(categoryID,data); 
-        return UpdatedData;
-      }
-
-
-
-      // async attributeCreate(data: categoryAttrDto ) {
-      //   const asd = getMongoRepository(CategoryWiseAttr,'ebhubon')
-
-      //   const photo1 = new CategoryWiseAttr();
-      //   photo1.attrTitle = "Brand";
-      //   await this.catAttributeRepository.save(photo1);
-
-      //   const user = new Category();
-      //   user.title = "John";
-      //   user.slug = "asdf"
-      //   user.categoryWiseAttrs = [photo1];
-        
-      //   return await this.categoryRepository.save(user);
+      // async update(data: Category) {
+      //   let categoryID = data._id
+      //   // if (data.parentCategories){
+      //   //   data.parentId  =  (data.parentCategories[data.parentCategories.length-1])
+      //   //   let categoryTitle = (await this.categoryRepository.findOne(data.parentId)).title
+      //   //   data.parentCategoryTitle =  categoryTitle
+      //   // }
+      //   // else{
+      //   //   data.parentCategories = null 
+      //   //   data.parentCategoryTitle = null
+      //   //   data.parentId = null
+      //   // }
+      //   delete data._id 
+      //   let UpdatedData = await this.categoryRepository.update(categoryID,data); 
+      //   return UpdatedData;
       // }
 
 
-      async attributeCreate(data  ) {
-        if (!data.categoryId){
-            data.categoryId = data.categoriesId[data.categoriesId.length-1]
-            delete data.categoriesId
-        }
-        return await this.categoryAttributeRepository.save(data);
-      }
 
-      async attributeGet(): Promise<any> {
-        let data =await this.categoryAttributeRepository.find()
-        return data;
-      }
+      // // async attributeCreate(data: categoryAttrDto ) {
+      // //   const asd = getMongoRepository(CategoryWiseAttr,'ebhubon')
 
-      async attributeUpdate(data: any) {
-        let userId = data._id
-        delete data._id 
-        let UpdatedData = await this.categoryAttributeRepository.update(userId,data); 
-        return UpdatedData;
-      }
+      // //   const photo1 = new CategoryWiseAttr();
+      // //   photo1.attrTitle = "Brand";
+      // //   await this.catAttributeRepository.save(photo1);
 
-      async attributeDelete(id: string) {
-        const data = await this.categoryAttributeRepository.delete(id);
-        if (!data)
-        {
-          throw new HttpException('Not found',HttpStatus.NOT_FOUND)
-        }
-        return data
-      }
+      // //   const user = new Category();
+      // //   user.title = "John";
+      // //   user.slug = "asdf"
+      // //   user.categoryWiseAttrs = [photo1];
+        
+      // //   return await this.categoryRepository.save(user);
+      // // }
 
-      async findspecific(catId: string) {
-        const data = await this.categoryAttributeRepository.find({categoryId:catId});
-        if (!data)
-        {
 
-            throw new HttpException('Not found',HttpStatus.NOT_FOUND)
-        }
-        return data
-      }
+      // async attributeCreate(data  ) {
+      //   if (!data.categoryId){
+      //       data.categoryId = data.categoriesId[data.categoriesId.length-1]
+      //       delete data.categoriesId
+      //   }
+      //   return await this.categoryAttributeRepository.save(data);
+      // }
+
+      // async attributeGet(): Promise<any> {
+      //   let data =await this.categoryAttributeRepository.find()
+      //   return data;
+      // }
+
+      // async attributeUpdate(data: any) {
+      //   let userId = data._id
+      //   delete data._id 
+      //   let UpdatedData = await this.categoryAttributeRepository.update(userId,data); 
+      //   return UpdatedData;
+      // }
+
+      // async attributeDelete(id: string) {
+      //   const data = await this.categoryAttributeRepository.delete(id);
+      //   if (!data)
+      //   {
+      //     throw new HttpException('Not found',HttpStatus.NOT_FOUND)
+      //   }
+      //   return data
+      // }
+
+      // async findspecific(catId: string) {
+      //   const data = await this.categoryAttributeRepository.find({categoryId:catId});
+      //   if (!data)
+      //   {
+
+      //       throw new HttpException('Not found',HttpStatus.NOT_FOUND)
+      //   }
+      //   return data
+      // }
 
 
 

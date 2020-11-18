@@ -13,4 +13,5 @@ export interface SellerInfoInter {
     UpdatedBy?: string;
     UpdatedAt?: string;
     status: string;
+
 }

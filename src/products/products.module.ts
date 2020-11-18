@@ -6,10 +6,11 @@ import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { productCreateMiddleware } from './middleware/productCreate.middleware';
 import { productUpdateMiddleware } from './middleware/productUpdate.middleware';
+import { TermValue } from 'src/common/Entity/termValue.entity';
 
 
 @Module({
-    imports: [TypeOrmModule,TypeOrmModule.forFeature([Product],'ebhubon'),TypeOrmModule.forFeature([Category],'ebhubon')],
+    imports: [TypeOrmModule,TypeOrmModule.forFeature([Product],'ebhubon'),TypeOrmModule.forFeature([TermValue],'ebhubon')],
     controllers: [ ProductsController],
     providers: [ ProductsService],
     exports: [ProductsService,]

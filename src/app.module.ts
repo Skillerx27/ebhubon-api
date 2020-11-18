@@ -30,6 +30,8 @@ import { Seller } from './sellers/sellerSchema/seller.entity';
 import { SellerUser } from './sellers/sellerSchema/userSeller.entity';
 import { User } from './users/userSchema/user.entity';
 import { CategoryAttribute } from './category/categorySchema/categoryWiseAttr.entity';
+import { Term } from './common/Entity/term.entity';
+import { TermValue } from './common/Entity/termValue.entity';
 
 @Module({
   imports: [
@@ -43,10 +45,10 @@ import { CategoryAttribute } from './category/categorySchema/categoryWiseAttr.en
         username: 'root',
         password: '',
         database: 'ebhubon',
-        entities: [Category,User,Seller,Product,SellerUser,CategoryAttribute],
+        entities: [TermValue,User,Seller,Product,SellerUser,Term],
         synchronize: true,
         useNewUrlParser: true,
-        logging: true,
+        logging: false,
         //autoLoadEntities: true,
          useUnifiedTopology: true,
       }),
@@ -103,12 +105,12 @@ import { CategoryAttribute } from './category/categorySchema/categoryWiseAttr.en
   //   //autoLoadEntities: true,
   //   useUnifiedTopology: true,
   // }),
-  TypeOrmModule.forFeature([Category ], 'ebhubon'),
+  TypeOrmModule.forFeature([TermValue ], 'ebhubon'),
   TypeOrmModule.forFeature([Product ], 'ebhubon'),
   TypeOrmModule.forFeature([User ], 'ebhubon'),
   TypeOrmModule.forFeature([Seller ], 'ebhubon'),
   TypeOrmModule.forFeature([SellerUser],'ebhubon'),
-  TypeOrmModule.forFeature([CategoryAttribute],'ebhubon'),
+  TypeOrmModule.forFeature([Term],'ebhubon'),
   CategoryModule, ProductsModule, UsersModule,AuthModule, SellersModule, MediaModule],
   controllers: [AppController, CategoryController, ProductsController, UsersController, SellersController, MediaController],
   providers: [AppService, CategoryService, ProductsService, UsersService,AuthModule, SellersService, MediaService],
